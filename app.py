@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 
 # =========================================================
@@ -16,7 +17,7 @@ st.set_page_config(
 # LOAD MODEL
 # =========================================================
 
-model = joblib.load("xgb_clean.pkl")
+model = joblib.load("modelo_final.pkl")
 
 # =========================================================
 # TITLE
@@ -49,6 +50,20 @@ recomm = st.sidebar.slider(
     7.5
 )
 
+poverq = st.sidebar.slider(
+    "Perceived Overall Quality",
+    1.0,
+    10.0,
+    7.5
+)
+
+pq = st.sidebar.slider(
+    "Perceived Product Quality",
+    1.0,
+    10.0,
+    7.5
+)
+
 customer_experience_index = st.sidebar.slider(
     "Customer Experience",
     1.0,
@@ -64,23 +79,73 @@ service_quality_score = st.sidebar.slider(
 )
 
 # =========================================================
-# PREDICT
+# PREDICTION
 # =========================================================
 
 if st.button("Predict Repurchase Probability"):
 
     try:
 
-        # =====================================================
-        # INPUT DATA
-        # =====================================================
-
         input_data = pd.DataFrame({
 
-            'satis': [satis],
-            'recomm': [recomm],
-            'customer_experience_index': [customer_experience_index],
-            'service_quality_score': [service_quality_score]
+            'poverq': [float(poverq)],
+            'soverq': [7.5],
+            'pq': [float(pq)],
+            'satis': [float(satis)],
+            'repur': [7.5],
+            'recomm': [float(recomm)],
+            'Q19': [1],
+            'VN_1009_Q20A': [float(satis)],
+            'VN_1009_TP01': [7],
+            'VN_1009_TP02': [7],
+            'VN_1009_TP03': [7],
+            'VN_1009_TP04': [7],
+            'VN_1009_TP05': [7],
+            'VN_1009_TP06': [7],
+            'VN_1009_TP07': [7],
+            'VN_1009_TP08': [7],
+            'VN_1009_TP09': [0],
+            'VN_1009_TP10': [7],
+            'VN_1009_TP11': [7],
+            'VN_1009_TP12': [7],
+            'VN_1009_TP13': [0],
+            'VN_1009_TP14': [0],
+            'VN_1009_TP15': [0],
+            'VN_1009_TP16': [0],
+            'VN_1009_TP17': [7],
+            'VN_1009_TP18': [0],
+            'VN_1009_TP19': [0],
+            'VN_1009_TP20': [1],
+            'VN_1009_TP21': [1],
+            'VN_1009_TP24_1': [1],
+            'VN_1009_TP24_2': [1],
+            'Q9C_P': [1],
+            'Q9D': [100],
+            'VN_1009_TP25A': [2],
+            'age': [35],
+            'race': [1],
+            'work': [1],
+            'income': [50],
+            'educat': [7],
+            'childsupp': [0],
+            'marital': [2],
+            'gender': [1],
+            'house': [3],
+
+            'customer_experience_index': [float(customer_experience_index)],
+            'ux_score': [float(customer_experience_index)],
+            'service_quality_score': [float(service_quality_score)],
+            'promotion_sensitivity_score': [7.5],
+
+            # IMPORTANTÍSIMO:
+            # categorías como category y NO str
+
+            'company_v': pd.Categorical(['FAVE']),
+            'VN_1009_TP21_6specify': pd.Categorical(['none']),
+            'VN_1009_TP22': pd.Categorical(['none']),
+            'VN_1009_TP23': pd.Categorical(['none']),
+            'pincome': pd.Categorical(['5']),
+            'DOI': pd.Categorical(['2025-01-01'])
 
         })
 
