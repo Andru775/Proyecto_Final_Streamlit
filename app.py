@@ -86,6 +86,10 @@ if st.button("Predict Repurchase Probability"):
 
     try:
 
+        # =====================================================
+        # INPUT DATA
+        # =====================================================
+
         input_data = pd.DataFrame({
 
             'poverq': [float(poverq)],
@@ -96,6 +100,7 @@ if st.button("Predict Repurchase Probability"):
             'recomm': [float(recomm)],
             'Q19': [1],
             'VN_1009_Q20A': [float(satis)],
+
             'VN_1009_TP01': [7],
             'VN_1009_TP02': [7],
             'VN_1009_TP03': [7],
@@ -117,11 +122,14 @@ if st.button("Predict Repurchase Probability"):
             'VN_1009_TP19': [0],
             'VN_1009_TP20': [1],
             'VN_1009_TP21': [1],
+
             'VN_1009_TP24_1': [1],
             'VN_1009_TP24_2': [1],
+
             'Q9C_P': [1],
             'Q9D': [100],
             'VN_1009_TP25A': [2],
+
             'age': [35],
             'race': [1],
             'work': [1],
@@ -137,8 +145,7 @@ if st.button("Predict Repurchase Probability"):
             'service_quality_score': [float(service_quality_score)],
             'promotion_sensitivity_score': [7.5],
 
-            # IMPORTANTÍSIMO:
-            # categorías como category y NO str
+            # Categoricals
 
             'company_v': pd.Categorical(['FAVE']),
             'VN_1009_TP21_6specify': pd.Categorical(['none']),
@@ -163,15 +170,37 @@ if st.button("Predict Repurchase Probability"):
 
         st.subheader("Prediction Results")
 
+        prob_percent = probability * 100
+
         st.metric(
             "Repurchase Probability",
-            f"{probability:.2%}"
+            f"{prob_percent:.2f}%"
         )
 
-        if prediction == 1:
+        # Progress bar
+
+        st.progress(float(probability))
+
+        # Interpretation
+
+        if probability >= 0.70:
 
             st.success(
                 "High probability of customer repurchase"
+            )
+
+            st.info(
+                "This customer demonstrates strong loyalty and satisfaction indicators."
+            )
+
+        elif probability >= 0.40:
+
+            st.warning(
+                "Moderate probability of customer repurchase"
+            )
+
+            st.info(
+                "The customer may repurchase, but some satisfaction variables could improve."
             )
 
         else:
@@ -179,6 +208,39 @@ if st.button("Predict Repurchase Probability"):
             st.error(
                 "Low probability of customer repurchase"
             )
+
+            st.info(
+                "The model suggests low customer retention likelihood based on current indicators."
+            )
+
+        # =====================================================
+        # VISUALIZATION
+        # =====================================================
+
+        chart_data = pd.DataFrame({
+            "Metric": [
+                "Satisfaction",
+                "Recommendation",
+                "Overall Quality",
+                "Product Quality",
+                "Customer Experience",
+                "Service Quality"
+            ],
+            "Score": [
+                satis,
+                recomm,
+                poverq,
+                pq,
+                customer_experience_index,
+                service_quality_score
+            ]
+        })
+
+        st.subheader("Customer Metrics Overview")
+
+        st.bar_chart(
+            chart_data.set_index("Metric")
+        )
 
     except Exception as e:
 
