@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import joblib
 
 # =========================================================
@@ -17,9 +16,7 @@ st.set_page_config(
 # LOAD MODEL
 # =========================================================
 
-model = joblib.load(
-    'xgboost_repurchase_model.pkl'
-)
+model = joblib.load("xgb_clean.pkl")
 
 # =========================================================
 # TITLE
@@ -38,7 +35,6 @@ using Machine Learning techniques.
 
 st.sidebar.header("Customer Information")
 
-# Strategic features
 satis = st.sidebar.slider(
     "Customer Satisfaction",
     1.0,
@@ -53,79 +49,19 @@ recomm = st.sidebar.slider(
     7.5
 )
 
-poverq = st.sidebar.slider(
-    "Perceived Overall Quality",
+customer_experience_index = st.sidebar.slider(
+    "Customer Experience",
     1.0,
     10.0,
     7.5
 )
 
-pq = st.sidebar.slider(
-    "Perceived Product Quality",
+service_quality_score = st.sidebar.slider(
+    "Service Quality",
     1.0,
     10.0,
     7.5
 )
-
-# =========================================================
-# INPUT DATA
-# =========================================================
-
-input_data = pd.DataFrame({
-    'poverq': [poverq],
-    'soverq': [7.5],
-    'pq': [pq],
-    'satis': [satis],
-    'repur': [7.5],
-    'recomm': [recomm],
-    'Q19': [1],
-    'VN_1009_Q20A': [satis],
-    'VN_1009_TP01': [7],
-    'VN_1009_TP02': [7],
-    'VN_1009_TP03': [7],
-    'VN_1009_TP04': [7],
-    'VN_1009_TP05': [7],
-    'VN_1009_TP06': [7],
-    'VN_1009_TP07': [7],
-    'VN_1009_TP08': [7],
-    'VN_1009_TP09': [0],
-    'VN_1009_TP10': [7],
-    'VN_1009_TP11': [7],
-    'VN_1009_TP12': [7],
-    'VN_1009_TP13': [0],
-    'VN_1009_TP14': [0],
-    'VN_1009_TP15': [0],
-    'VN_1009_TP16': [0],
-    'VN_1009_TP17': [7],
-    'VN_1009_TP18': [0],
-    'VN_1009_TP19': [0],
-    'VN_1009_TP20': [1],
-    'VN_1009_TP21': [1],
-    'VN_1009_TP24_1': [1],
-    'VN_1009_TP24_2': [1],
-    'Q9C_P': [1],
-    'Q9D': [100],
-    'VN_1009_TP25A': [2],
-    'age': [35],
-    'race': [1],
-    'work': [1],
-    'income': [50],
-    'educat': [7],
-    'childsupp': [0],
-    'marital': [2],
-    'gender': [1],
-    'house': [3],
-    'customer_experience_index': [7.5],
-    'ux_score': [7.5],
-    'service_quality_score': [7.5],
-    'promotion_sensitivity_score': [7.5],
-    'company_v': ['FAVE'],
-    'VN_1009_TP21_6specify': ['none'],
-    'VN_1009_TP22': ['none'],
-    'VN_1009_TP23': ['none'],
-    'pincome': ['5'],
-    'DOI': ['2025-01-01']
-})
 
 # =========================================================
 # PREDICT
@@ -135,29 +71,48 @@ if st.button("Predict Repurchase Probability"):
 
     try:
 
+        # =====================================================
+        # INPUT DATA
+        # =====================================================
+
+        input_data = pd.DataFrame({
+
+            'satis': [satis],
+            'recomm': [recomm],
+            'customer_experience_index': [customer_experience_index],
+            'service_quality_score': [service_quality_score]
+
+        })
+
+        # =====================================================
+        # PREDICTION
+        # =====================================================
+
         prediction = model.predict(input_data)[0]
 
-        probability = model.predict_proba(
-            input_data
-        )[0][1]
+        probability = model.predict_proba(input_data)[0][1]
+
+        # =====================================================
+        # RESULTS
+        # =====================================================
 
         st.subheader("Prediction Results")
 
         st.metric(
-            label="Repurchase Probability",
-            value=f"{probability*100:.2f}%"
+            "Repurchase Probability",
+            f"{probability:.2%}"
         )
 
         if prediction == 1:
 
             st.success(
-                "High Repurchase Probability"
+                "High probability of customer repurchase"
             )
 
         else:
 
             st.error(
-                "Low Repurchase Probability"
+                "Low probability of customer repurchase"
             )
 
     except Exception as e:
