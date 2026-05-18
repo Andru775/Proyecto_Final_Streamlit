@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
+import xgboost as xgb
 import matplotlib.pyplot as plt
 # =========================================================
 # CONFIG
@@ -17,7 +17,8 @@ st.set_page_config(
 # LOAD MODEL
 # =========================================================
 
-model = joblib.load("modelo_final.pkl")
+model = xgb.XGBClassifier()
+model.load_model("xgb_model.json")
 
 # =========================================================
 # TITLE
