@@ -1,7 +1,11 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import xgboost as xgb
+try:
+    import xgboost as xgb
+    _HAS_XGBOOST = True
+except Exception:
+    _HAS_XGBOOST = False
 import matplotlib.pyplot as plt
 # =========================================================
 # CONFIG
@@ -17,8 +21,18 @@ st.set_page_config(
 # LOAD MODEL
 # =========================================================
 
-model = xgb.XGBClassifier()
-model.load_model("xgb_model.json")
+model = None
+if _HAS_XGBOOST:
+    try:
+        model = xgb.XGBClassifier()
+        model.load_model("xgb_model.json")
+    except Exception:
+        model = None
+
+# Fallback simple predictor if xgboost is unavailable or model fails to load
+if model is None:
+    from fallback_model import DummyModel
+    model = DummyModel()
 
 # =========================================================
 # TITLE
