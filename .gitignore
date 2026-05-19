@@ -1,0 +1,26 @@
+.venv/
+env/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints
+*.egg-info/
+dist/
+build/
+.DS_Store
+Thumbs.db
+/.idea/
+.vscode/
+*.log
+instance/
+.pytest_cache/
+env.bak/
+__pycache__/
+/.mypy_cache/
+
+# OS files
+desktop.ini
+ehthumbs.db
+
+# model and data backups (do not ignore the actual xgb_model.json if you want to deploy with it)
+# xgb_model.json
