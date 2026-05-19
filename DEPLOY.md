@@ -56,6 +56,7 @@ streamlit run app.py
 
 ## Notas
 - Si la app falla al cargar `xgb_model.json`, confirme que el archivo existe en la raíz y que es compatible con la versión de `xgboost` instalada.
+- El repositorio ahora está configurado para compatibilidad con el entorno actual de Streamlit Cloud (Python 3.14, `streamlit==1.57.0`, `pandas==3.0.3`, `Pillow==12.2.0`).
 - Para desplegar en Streamlit Cloud, asegúrese de que el repositorio sea público o que Streamlit Cloud tenga acceso al repositorio privado.
 
 ## Fallback automático
