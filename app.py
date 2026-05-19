@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 try:
     import xgboost as xgb
     _HAS_XGBOOST = True
 except Exception:
     _HAS_XGBOOST = False
-import matplotlib.pyplot as plt
 # =========================================================
 # CONFIG
 # =========================================================
