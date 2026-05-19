@@ -2,4 +2,5 @@ streamlit==1.57.0
 pandas==3.0.3
 numpy==2.3.3
 Pillow==12.2.0
+matplotlib==3.8.2
 # xgboost is optional for full model support; the app includes a fallback predictor if it is unavailable.

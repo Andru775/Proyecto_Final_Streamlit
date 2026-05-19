@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 try:
     import xgboost as xgb
     _HAS_XGBOOST = True
@@ -196,38 +197,52 @@ if st.button("Predict Repurchase Probability"):
 
         # Interpretation
 
-        if probability >= 0.70:
+        if probability >= 0.75:
 
             st.success(
-                "High probability of customer repurchase"
+                "Excellent customer loyalty detected."
             )
+
+            st.write(
+                "This customer has a very high probability of repurchasing. "
+                "Recommendation: continue current engagement and offer loyalty rewards."
+            )
+
+        elif probability >= 0.50:
 
             st.info(
-                "This customer demonstrates strong loyalty and satisfaction indicators."
+                "Moderate repurchase probability."
             )
 
-        elif probability >= 0.40:
+            st.write(
+                "Customer retention strategies could improve loyalty. "
+                "Recommendation: target promotions and strengthen service touchpoints."
+            )
+
+        elif probability >= 0.30:
 
             st.warning(
-                "Moderate probability of customer repurchase"
+                "Low repurchase probability."
             )
 
-            st.info(
-                "The customer may repurchase, but some satisfaction variables could improve."
+            st.write(
+                "The customer may require targeted promotions or service improvements. "
+                "Recommendation: improve product perception and follow up on satisfaction."
             )
 
         else:
 
             st.error(
-                "Low probability of customer repurchase"
+                "Very low repurchase probability."
             )
 
-            st.info(
-                "The model suggests low customer retention likelihood based on current indicators."
+            st.write(
+                "This customer is at high risk of churn and may need urgent engagement. "
+                "Recommendation: offer personalized incentives and collect feedback."
             )
 
         # =====================================================
-        # VISUALIZATION
+        # VISUALIZACIÓN
         # =====================================================
 
         chart_data = pd.DataFrame({
@@ -250,9 +265,45 @@ if st.button("Predict Repurchase Probability"):
         })
 
         st.subheader("Customer Metrics Overview")
-
         st.bar_chart(
             chart_data.set_index("Metric")
+        )
+
+        # Probability gauge
+        fig, ax = plt.subplots(figsize=(8, 1.2))
+        ax.barh(
+            ["Repurchase Probability"],
+            [prob_percent],
+            color="#2E86AB"
+        )
+        ax.set_xlim(0, 100)
+        ax.set_xlabel("Probability (%)")
+        ax.set_title("Repurchase Probability Gauge")
+        ax.set_xticks([0, 25, 50, 75, 100])
+        ax.bar_label(ax.containers[0], fmt="%.1f%%", padding=5)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+        ax.spines["bottom"].set_color("#DDDDDD")
+        st.pyplot(fig)
+
+        # Model insights
+        st.subheader("Model Insights")
+        st.write(
+            "The model evaluates customer satisfaction, recommendation intention, service quality, "
+            "and perceived product quality to estimate repurchase likelihood. It uses customer experience "
+            "signals and demographic context to deliver actionable recommendations."
+        )
+
+        st.subheader("Model Performance")
+        st.write(
+            "- Model: XGBoost Classifier\n"
+            "- Objective: binary:logistic\n"
+            "- Features used: 57\n"
+            "- Accuracy: not available in the exported model artifact\n"
+            "- ROC-AUC: not available in the exported model artifact\n"
+            "- Precision: not available in the exported model artifact\n"
+            "- Recall: not available in the exported model artifact"
         )
 
     except Exception as e:
