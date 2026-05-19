@@ -1,3 +1,3 @@
 streamlit==1.32.2
-pandas==2.1.4
+pandas==2.2.4
 # xgboost is optional for full model support; the app includes a fallback predictor if it is unavailable.
